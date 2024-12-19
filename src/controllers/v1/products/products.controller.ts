@@ -10,7 +10,6 @@ import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { SerializeResponse } from 'src/infrastructure/interceptors/serialize-response.interceptor';
 
-// import { CreateProductUseCases } from 'src/usecases/product/create-product.usecases';
 import { GetProductUseCases } from 'src/usecases/product/get-product.usecases';
 
 import { GetProductsQueryParamDto } from './dtos/get-products.request';
@@ -21,26 +20,7 @@ import { GetProductResponseDto } from './dtos/get-product.response';
 @ApiTags('Products')
 @Controller({ path: 'products', version: '1' })
 export class ProductsController {
-  constructor(
-    // private createProductUseCases: CreateProductUseCases,
-    private getProductUseCases: GetProductUseCases,
-  ) {}
-
-  // @Post('/')
-  // @HttpCode(HttpStatus.CREATED)
-  // @ApiResponse({
-  //   description: 'Create Product',
-  //   status: HttpStatus.CREATED,
-  //   type: CreateProductsResponseDto,
-  // })
-  // @SerializeResponse(CreateProductsResponseDto)
-  // async createProduct(
-  //   @Body() requestDto: CreateProductRequestDto,
-  // ): Promise<{ data: Product }> {
-  //   return {
-  //     data: await this.createProductUseCases.createProduct(requestDto),
-  //   };
-  // }
+  constructor(private getProductUseCases: GetProductUseCases) {}
 
   @Get('/:id')
   @ApiParam({
