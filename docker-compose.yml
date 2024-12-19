@@ -1,0 +1,32 @@
+services:
+  blue-vending-be:
+    build: 
+      context: '.'
+      target: development
+      args:
+        - CODEARTIFACT_AUTH_TOKEN
+    command: sh -c 'yarn start:dev'
+    image: 'sunday/blue-vending-service'
+    depends_on:
+      - blue-vending-db
+    volumes:
+      - '.:/usr/src/app'
+    ports:
+      - '4001:4001'
+    env_file:
+      - .env
+  blue-vending-db:
+    image: postgres:12.8
+    container_name: blue-vending-db
+    ports:
+      - '5426:5432'
+    volumes:
+      - 'blue-vending-db:/var/lib/postgresql/data/pgdata'
+    environment:
+      PGDATA: '/var/lib/postgresql/data/pgdata'
+      POSTGRES_USER: 'api'
+      POSTGRES_PASSWORD: 'api'
+      POSTGRES_DB: 'blue-vending-db'
+
+volumes:
+  blue-vending-db:

@@ -1,0 +1,31 @@
+# Get inventories
+GET http://localhost:4001/api/v1/inventories/1
+content-type: application/json
+
+###
+
+# Add to inventories
+POST http://localhost:4001/api/v1/inventories
+content-type: application/json
+
+{
+  "machineId": "1",
+  "productId": "2",
+  "quantity": 6
+}
+
+###
+
+# Update inventories
+PATCH http://localhost:4001/api/v1/inventories
+content-type: application/json
+
+{
+  "machineId": "1",
+  "inventories": [
+    {
+      "id": "1",
+      "quantity": 50
+    }
+  ]
+}

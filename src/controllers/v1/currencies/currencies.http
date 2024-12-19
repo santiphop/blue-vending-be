@@ -1,0 +1,17 @@
+# Add money
+POST http://localhost:4001/api/v1/currencies
+content-type: application/json
+
+{
+  "machineId": "1",
+  "currencies": [
+    {
+      "value": 10,
+      "quantity": 40
+    },
+    {
+      "value": 5,
+      "quantity": 80
+    }
+  ]
+}

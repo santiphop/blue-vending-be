@@ -1,0 +1,13 @@
+# Create new machine
+POST http://localhost:4001/api/v1/machines
+content-type: application/json
+
+{
+  "location": "Bangkok"
+}
+
+###
+
+# Maintain machine
+PATCH http://localhost:4001/api/v1/machines/1
+content-type: application/json
