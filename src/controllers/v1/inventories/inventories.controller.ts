@@ -7,12 +7,16 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { SerializeResponse } from 'src/infrastructure/interceptors/serialize-response.interceptor';
 import { GetInventoriesUseCases } from 'src/usecases/inventory/get-inventories.usecases';
-import { GetInventoriesPathParamDto } from './dtos/get-inventories.request';
+import {
+  GetInventoriesPathParamDto,
+  GetInventoriesPathQueryDto,
+} from './dtos/get-inventories.request';
 import {
   DataWrapperGetInventoriesResponseDto,
   GetInventoriesResponseDto,
@@ -52,9 +56,13 @@ export class InventoriesController {
   @SerializeResponse(DataWrapperGetInventoriesResponseDto)
   async getInventories(
     @Param() param: GetInventoriesPathParamDto,
+    @Query() query: GetInventoriesPathQueryDto,
   ): Promise<{ data: GetInventoriesResponseDto }> {
     return {
-      data: await this.getInventoriesUseCases.getInventories(param.machineId),
+      data: await this.getInventoriesUseCases.getInventories(
+        param.machineId,
+        query.itemNumber,
+      ),
     };
   }
 

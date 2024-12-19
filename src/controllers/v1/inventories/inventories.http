@@ -4,14 +4,20 @@ content-type: application/json
 
 ###
 
+# Get inventories filter by item number
+GET http://localhost:4001/api/v1/inventories/1?itemNumber=22
+content-type: application/json
+
+###
+
 # Add to inventories
 POST http://localhost:4001/api/v1/inventories
 content-type: application/json
 
 {
   "machineId": "1",
-  "productId": "2",
-  "quantity": 6
+  "productId": "1",
+  "quantity": 2
 }
 
 ###

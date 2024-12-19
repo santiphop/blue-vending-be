@@ -77,6 +77,10 @@ class InventoryDto implements Partial<Inventory> {
 
   @ApiProperty()
   @Expose()
+  id!: string;
+
+  @ApiProperty()
+  @Expose()
   itemNumber!: number | null;
 
   @ApiProperty()

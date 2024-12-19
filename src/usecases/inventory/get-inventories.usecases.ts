@@ -14,14 +14,17 @@ export class GetInventoriesUseCases {
 
   async getInventories(
     machineId: string,
+    itemNumber?: number,
   ): Promise<{ machine: Machine; inventories: Inventory[] }> {
     const machine = await this.machinesRepository.findOneById(machineId);
     if (!machine) {
       throw new NotFoundException(`Machine with id "${machineId}" not found.`);
     }
 
-    const inventories =
-      await this.inventoriesRepository.findAllByMachineId(machineId);
+    const inventories = await this.inventoriesRepository.findAllByMachineId(
+      machineId,
+      itemNumber,
+    );
     return {
       machine,
       inventories,

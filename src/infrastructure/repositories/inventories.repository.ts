@@ -9,6 +9,11 @@ import {
   InventoryUpdation,
 } from 'src/domain/entities/inventories.entity';
 
+interface DecrementationParams {
+  inventoryId: string;
+  quantity: number;
+}
+
 @Injectable()
 export class InventoriesRepository {
   constructor(
@@ -19,6 +24,15 @@ export class InventoriesRepository {
   create(params: InventoryCreation): Promise<Inventory> {
     const newProductEntity = this.inventoriesRepository.create(params);
     return this.inventoriesRepository.save(newProductEntity);
+  }
+
+  async decrement({ inventoryId, quantity }: DecrementationParams) {
+    this.inventoriesRepository
+      .createQueryBuilder()
+      .update(Inventory)
+      .set({ quantity: () => `quantity - ${quantity}` })
+      .where('"id" = :inventoryId', { inventoryId })
+      .execute();
   }
 
   bulkUpdate(params: InventoryUpdation[]): Promise<Inventory[]> {
@@ -45,9 +59,12 @@ export class InventoriesRepository {
     return query.getMany();
   }
 
-  async findAllByMachineId(machineId: string): Promise<Inventory[]> {
+  async findAllByMachineId(
+    machineId: string,
+    itemNumber?: number,
+  ): Promise<Inventory[]> {
     const inventories = await this.inventoriesRepository.find({
-      where: { machine: { id: machineId } },
+      where: { itemNumber, machine: { id: machineId } },
       relations: ['product'],
     });
     return inventories.map(

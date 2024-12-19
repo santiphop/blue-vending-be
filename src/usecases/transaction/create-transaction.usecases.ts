@@ -30,6 +30,7 @@ export class CreateTransactionUseCases {
   async createCashTransaction({
     inventoryId,
     currencies,
+    quantity,
   }: CreateTransactionRequestDto) {
     const inventory = await this.inventoriesRepository.findOneById(inventoryId);
     if (!inventory) {
@@ -40,11 +41,9 @@ export class CreateTransactionUseCases {
 
     const { machine, product } = inventory;
     const productPrice = product!.price;
+    const totalPrice = parseInt(productPrice) * quantity;
     const amountPaid = this.sumOfCurrencies(currencies);
-    const coinChanges = this.calculateChange(
-      parseInt(productPrice),
-      amountPaid,
-    );
+    const coinChanges = this.calculateChange(totalPrice, amountPaid);
     await this.currenciesRepository.bulkIncrement(machine!.id, currencies);
 
     const existingCurrencies =
@@ -52,7 +51,7 @@ export class CreateTransactionUseCases {
     if (existingCurrencies.length !== coinChanges.length) {
       await this.currenciesRepository.bulkDecrement(machine!.id, currencies);
       await this.transactionsRepository.create({
-        amount: amountPaid,
+        amount: totalPrice,
         paymentMethod: PaymentMethod.CASH,
         machine: inventory.machine,
         product: inventory.product,
@@ -61,10 +60,15 @@ export class CreateTransactionUseCases {
 
       throw new BadRequestException('Not enough changes, return amount paid');
     }
+
     await this.currenciesRepository.bulkDecrement(machine!.id, coinChanges);
+    await this.inventoriesRepository.decrement({
+      inventoryId: inventory.id,
+      quantity,
+    });
 
     await this.transactionsRepository.create({
-      amount: amountPaid,
+      amount: totalPrice,
       paymentMethod: PaymentMethod.CASH,
       machine: inventory.machine,
       product: inventory.product,
